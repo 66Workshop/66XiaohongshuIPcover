@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "66Workshop Xiaohongshu IP Cover Job",
+  "type": "object",
+  "required": [
+    "job_id",
+    "topic",
+    "main_hook",
+    "person_asset_id",
+    "layout_template_id",
+    "font_style_id",
+    "output"
+  ],
+  "properties": {
+    "job_id": {"type": "string", "minLength": 3},
+    "topic": {"type": "string", "minLength": 2},
+    "vehicle": {"type": "string"},
+    "upgrade_project": {"type": "string"},
+    "main_hook": {"type": "string", "minLength": 4, "maxLength": 24},
+    "secondary_line": {"type": "string", "maxLength": 40},
+    "person_asset_id": {"type": "string"},
+    "layout_template_id": {
+      "type": "string",
+      "enum": [
+        "P01_DATA_CONFLICT",
+        "P02_BEFORE_AFTER",
+        "P03_VEHICLE_DECISION",
+        "P04_PRODUCT_VALUE"
+      ]
+    },
+    "font_style_id": {"type": "string"},
+    "vehicle_anchor": {"type": "string"},
+    "evidence_images": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {"type": "string"}
+    },
+    "must_keep": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "must_not": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "output": {
+      "type": "object",
+      "required": ["aspect_ratio", "candidate_count"],
+      "properties": {
+        "aspect_ratio": {"const": "3:4"},
+        "candidate_count": {"type": "integer", "minimum": 1, "maximum": 4}
+      }
+    }
+  },
+  "additionalProperties": true
+}
