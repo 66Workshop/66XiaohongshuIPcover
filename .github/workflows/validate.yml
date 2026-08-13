@@ -1,0 +1,69 @@
+name: validate-ip-cover-skill
+
+on:
+  push:
+    paths:
+      - 'SKILL.md'
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'examples/**'
+      - 'assets/manifests/**'
+      - '.github/workflows/validate.yml'
+  pull_request:
+    paths:
+      - 'SKILL.md'
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'examples/**'
+      - 'assets/manifests/**'
+      - '.github/workflows/validate.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate example job
+        run: python scripts/validate_job.py examples/job.example.json
+
+      - name: Validate manifest JSON syntax
+        run: |
+          python -m json.tool assets/manifests/person_assets.json >/dev/null
+          python -m json.tool assets/manifests/visual_assets.json >/dev/null
+          python -m json.tool schemas/job.schema.json >/dev/null
+
+      - name: Asset path audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          missing = []
+          for manifest_path in [
+              Path('assets/manifests/person_assets.json'),
+              Path('assets/manifests/visual_assets.json')
+          ]:
+              data = json.loads(manifest_path.read_text())
+              def walk(obj):
+                  if isinstance(obj, dict):
+                      for k, v in obj.items():
+                          if k == 'path' and isinstance(v, str):
+                              if not Path(v).exists():
+                                  missing.append(v)
+                          else:
+                              walk(v)
+                  elif isinstance(obj, list):
+                      for item in obj:
+                          walk(item)
+              walk(data)
+
+          if missing:
+              raise SystemExit('Missing asset paths: ' + ', '.join(missing))
+          print('ASSET_PATHS_OK')
+          PY
