@@ -1,0 +1,15 @@
+{
+  "job_id": "job-001-wj-m8-ap9321",
+  "status": "planned",
+  "selected_output": null,
+  "rework_count": 0,
+  "qa": {
+    "identity_pass": null,
+    "title_pass": null,
+    "vehicle_pass": null,
+    "evidence_pass": null,
+    "layout_pass": null,
+    "brand_pass": null
+  },
+  "notes": "Controlled-production trial record. Populate after generation and human QA."
+}

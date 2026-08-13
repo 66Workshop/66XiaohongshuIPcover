@@ -35,14 +35,9 @@
       "maxItems": 3,
       "items": {"type": "string"}
     },
-    "must_keep": {
-      "type": "array",
-      "items": {"type": "string"}
-    },
-    "must_not": {
-      "type": "array",
-      "items": {"type": "string"}
-    },
+    "must_keep": {"type": "array", "items": {"type": "string"}},
+    "must_not": {"type": "array", "items": {"type": "string"}},
+    "status": {"type": "string", "enum": ["pending", "approved", "archived"]},
     "output": {
       "type": "object",
       "required": ["aspect_ratio", "candidate_count"],

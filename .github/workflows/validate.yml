@@ -4,18 +4,24 @@ on:
   push:
     paths:
       - 'SKILL.md'
+      - 'assets/**'
+      - 'examples/**'
+      - 'jobs/**'
+      - 'records/**'
       - 'schemas/**'
       - 'scripts/**'
-      - 'examples/**'
-      - 'assets/manifests/**'
+      - 'tests/**'
       - '.github/workflows/validate.yml'
   pull_request:
     paths:
       - 'SKILL.md'
+      - 'assets/**'
+      - 'examples/**'
+      - 'jobs/**'
+      - 'records/**'
       - 'schemas/**'
       - 'scripts/**'
-      - 'examples/**'
-      - 'assets/manifests/**'
+      - 'tests/**'
       - '.github/workflows/validate.yml'
   workflow_dispatch:
 
@@ -29,41 +35,22 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Validate example job
-        run: python scripts/validate_job.py examples/job.example.json
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
 
-      - name: Validate manifest JSON syntax
+      - name: Validate repository assets and structure
+        run: python scripts/validate_repo.py
+
+      - name: Validate all jobs
+        shell: bash
         run: |
-          python -m json.tool assets/manifests/person_assets.json >/dev/null
-          python -m json.tool assets/manifests/visual_assets.json >/dev/null
-          python -m json.tool schemas/job.schema.json >/dev/null
+          while IFS= read -r -d '' file; do
+            python scripts/validate_job.py "$file"
+          done < <(find jobs -name '*.json' -print0)
 
-      - name: Asset path audit
+      - name: Validate JSON syntax
+        shell: bash
         run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          missing = []
-          for manifest_path in [
-              Path('assets/manifests/person_assets.json'),
-              Path('assets/manifests/visual_assets.json')
-          ]:
-              data = json.loads(manifest_path.read_text())
-              def walk(obj):
-                  if isinstance(obj, dict):
-                      for k, v in obj.items():
-                          if k == 'path' and isinstance(v, str):
-                              if not Path(v).exists():
-                                  missing.append(v)
-                          else:
-                              walk(v)
-                  elif isinstance(obj, list):
-                      for item in obj:
-                          walk(item)
-              walk(data)
-
-          if missing:
-              raise SystemExit('Missing asset paths: ' + ', '.join(missing))
-          print('ASSET_PATHS_OK')
-          PY
+          while IFS= read -r -d '' file; do
+            python -m json.tool "$file" >/dev/null
+          done < <(find assets/manifests schemas jobs records -name '*.json' -print0)
