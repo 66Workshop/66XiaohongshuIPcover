@@ -1,0 +1,56 @@
+name: validate-ip-cover-skill
+
+on:
+  push:
+    paths:
+      - 'SKILL.md'
+      - 'assets/**'
+      - 'examples/**'
+      - 'jobs/**'
+      - 'records/**'
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/validate.yml'
+  pull_request:
+    paths:
+      - 'SKILL.md'
+      - 'assets/**'
+      - 'examples/**'
+      - 'jobs/**'
+      - 'records/**'
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/validate.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Validate repository assets and structure
+        run: python scripts/validate_repo.py
+
+      - name: Validate all jobs
+        shell: bash
+        run: |
+          while IFS= read -r -d '' file; do
+            python scripts/validate_job.py "$file"
+          done < <(find jobs -name '*.json' -print0)
+
+      - name: Validate JSON syntax
+        shell: bash
+        run: |
+          while IFS= read -r -d '' file; do
+            python -m json.tool "$file" >/dev/null
+          done < <(find assets/manifests schemas jobs records -name '*.json' -print0)
