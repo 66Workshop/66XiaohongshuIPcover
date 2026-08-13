@@ -2,9 +2,9 @@
 
 ## 审计结论
 
-`VERDICT = CONTROLLED_PRODUCTION_READY_CANDIDATE`
+`VERDICT = CONTROLLED_PRODUCTION_READY`
 
-V0.1 的“受控生产”代码与资产层已经完成，feature branch 机器校验通过；在 PR 合入 `main` 并完成 post-merge 验证后，可升级为 `CONTROLLED_PRODUCTION_READY`。
+V0.1 的“受控生产”代码、资产、任务合同、测试、CI 与主分支交付已经完成。
 
 这不等于“全自动稳定生图”。V0.1 明确不接第三方生图 API，也不声称已经解决中文生成字、自动锁脸、车型/配件视觉相似度自动判定。
 
@@ -24,14 +24,20 @@ V0.1 的“受控生产”代码与资产层已经完成，feature branch 机器
 - [x] `validate_job.py` 校验任务结构、模板、人物 ID、字体 ID、3:4 与候选数
 - [x] `validate_repo.py` 校验仓库结构、8 个资产路径和 SHA256
 - [x] 单元测试通过
-- [x] GitHub Actions feature run #4：`success`
+- [x] Feature GitHub Actions run #4：`success`
+- [x] PR #1 GitHub Actions run #5：`success`
+- [x] PR #1 已 squash merge 到 `main`
+- [x] Main GitHub Actions run #6：`success`
 
 ## 机器证据
 
-- Feature commit: `b0d9334ae1209796bb3f8379a55c836248ee044b`
-- Feature tree: `190c181585a39eacb6ba04413caaca27f9b44adf`
-- GitHub Actions run: `31692241969`
-- Conclusion: `success`
+- Feature verified commit: `b0d9334ae1209796bb3f8379a55c836248ee044b`
+- Feature verified tree: `190c181585a39eacb6ba04413caaca27f9b44adf`
+- PR: `#1`
+- Squash merge commit: `d050e0150c9d4f8db53186d02810ef85a3e6db2c`
+- Feature workflow run: `31692241969` → `success`
+- PR workflow run: `31692334735` → `success`
+- Main workflow run: `31692389808` → `success`
 
 ## 资产策略说明
 
@@ -62,7 +68,7 @@ V0.1 的“受控生产”代码与资产层已经完成，feature branch 机器
 ## 红队结论
 
 ### ① 值得做 / 修改 / 放弃
-**值得做。V0.1 架构已成立，下一步应进入真实任务试运行，不应继续无止境堆规则。**
+**值得做。V0.1 架构已成立，下一步进入真实任务试运行，不继续无止境堆规则。**
 
 ### ② 最大风险
 把“规则统一、CI 通过”误判为“视觉输出已经稳定”。机器门禁只能证明仓库合同完整，不能替代真人脸、车型、配件和中文标题的人审。
@@ -80,4 +86,4 @@ V0.1 的“受控生产”代码与资产层已经完成，feature branch 机器
 - 连续 20 个任务达到指标：进入 V0.2 Runner/API 评估
 
 ### ⑥ 置信度
-`0.94`（针对仓库受控生产架构已成立；不代表生图质量成功率）
+`0.96`（针对仓库受控生产架构已成立；不代表生图质量成功率）
