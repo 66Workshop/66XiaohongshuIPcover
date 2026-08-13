@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "typography": [
+    {
+      "id": "brush_black_red_v1",
+      "path": "assets/authorized/typography/brush_black_red_reference.jpeg",
+      "status": "approved",
+      "role": "style_reference_only",
+      "rules": [
+        "black_for_fact_or_object",
+        "red_for_conflict_or_conclusion",
+        "brush_texture_allowed",
+        "do_not_treat_as_redistributable_font_file"
+      ]
+    }
+  ],
+  "successful_cases": [
+    {
+      "id": "case_01_weight_loss",
+      "path": "examples/successful/case_01_weight_loss.jpg",
+      "template": "P01_DATA_CONFLICT",
+      "strengths": ["specific_number", "measurement_evidence", "host_plus_vehicle", "large_component_foreground"]
+    },
+    {
+      "id": "case_02_brake_repair",
+      "path": "examples/successful/case_02_brake_repair.jpg",
+      "template": "P02_BEFORE_AFTER",
+      "strengths": ["large_host_face", "problem_component", "before_after_cards", "clean_background"]
+    },
+    {
+      "id": "case_03_g500_brake",
+      "path": "examples/successful/case_03_g500_brake.jpg",
+      "template": "P03_VEHICLE_DECISION",
+      "strengths": ["vehicle_identity", "host_as_judge", "real_parts_evidence", "decision_first_title"]
+    },
+    {
+      "id": "case_04_ap9561_mpv",
+      "path": "examples/successful/case_04_ap9561_mpv.jpg",
+      "template": "P04_PRODUCT_VALUE",
+      "strengths": ["product_vehicle_question", "kit_layout", "detail_evidence_strip", "strong_caliper_color"]
+    }
+  ]
+}
