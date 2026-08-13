@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "owner": "66Workshop",
+  "policy": "authorized_only",
+  "assets": [
+    {
+      "id": "ip_sit_forward_v1",
+      "path": "assets/authorized/ip/ip_sit_forward.png",
+      "pose": "seated_forward_hands_clasped",
+      "status": "approved",
+      "constraints": ["face_no_redraw", "identity_lock", "no_beautify"]
+    },
+    {
+      "id": "ip_sit_explain_v1",
+      "path": "assets/authorized/ip/ip_sit_explain.png",
+      "pose": "seated_explaining_hands",
+      "status": "approved",
+      "constraints": ["face_no_redraw", "identity_lock", "no_beautify"]
+    },
+    {
+      "id": "ip_stand_openhands_v1",
+      "path": "assets/authorized/ip/ip_stand_openhands.png",
+      "pose": "standing_open_hands",
+      "status": "approved",
+      "constraints": ["face_no_redraw", "identity_lock", "no_beautify"]
+    }
+  ]
+}
