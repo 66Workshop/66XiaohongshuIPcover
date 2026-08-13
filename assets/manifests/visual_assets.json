@@ -1,11 +1,14 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "typography": [
     {
       "id": "brush_black_red_v1",
-      "path": "assets/authorized/typography/brush_black_red_reference.jpeg",
-      "status": "approved",
+      "path": "assets/authorized/typography/brush_black_red_reference.webp",
+      "media_type": "image/webp",
       "role": "style_reference_only",
+      "status": "approved",
+      "sha256": "b18c27d83fb1935b7675f2672107cd14be042cfbf14ed92003c3950b0549d599",
+      "source_sha256": "3f365a3bc1bbb16d5ec91e3f71d9d1090dbfb13442f4dbfc50978e47c3c37bf6",
       "rules": [
         "black_for_fact_or_object",
         "red_for_conflict_or_conclusion",
@@ -17,27 +20,51 @@
   "successful_cases": [
     {
       "id": "case_01_weight_loss",
-      "path": "examples/successful/case_01_weight_loss.jpg",
+      "path": "examples/successful/case_01_weight_loss.webp",
+      "media_type": "image/webp",
+      "role": "successful_case_reference_derivative",
+      "status": "approved",
+      "sha256": "193f737ee833822e9f8d09650fea80c06c5024617fc1e8d78d915c3c11905db4",
+      "source_sha256": "5c2d5285a6190630ee498126776a0579eff3ffd3e849488848c9009e548a1006",
       "template": "P01_DATA_CONFLICT",
-      "strengths": ["specific_number", "measurement_evidence", "host_plus_vehicle", "large_component_foreground"]
+      "strengths": ["specific_number", "measurement_evidence", "host_plus_vehicle", "large_component_foreground"],
+      "source_quality_note": "Repository preview derivative; original authorized source remains the high-resolution reference."
     },
     {
       "id": "case_02_brake_repair",
-      "path": "examples/successful/case_02_brake_repair.jpg",
+      "path": "examples/successful/case_02_brake_repair.webp",
+      "media_type": "image/webp",
+      "role": "successful_case_reference_derivative",
+      "status": "approved",
+      "sha256": "9c300f8622beea49be6caa09dc1a33690f0ae24b2d62f262c35e6c3034c539b0",
+      "source_sha256": "099f97dc5b4ef7b9ae4fed6a978d432a307ed326258792e151f536563e195833",
       "template": "P02_BEFORE_AFTER",
-      "strengths": ["large_host_face", "problem_component", "before_after_cards", "clean_background"]
+      "strengths": ["large_host_face", "problem_component", "before_after_cards", "clean_background"],
+      "source_quality_note": "Repository preview derivative; original authorized source remains the high-resolution reference."
     },
     {
       "id": "case_03_g500_brake",
-      "path": "examples/successful/case_03_g500_brake.jpg",
+      "path": "examples/successful/case_03_g500_brake.webp",
+      "media_type": "image/webp",
+      "role": "successful_case_reference_derivative",
+      "status": "approved",
+      "sha256": "ce98356aea2bfc059f3cb0d19b41da20e2969a0bf2240a10b962e4e0ee6700f5",
+      "source_sha256": "a43398e08a28d049cf0be1022bddd2fd7f2da4f34817e61ce80339aa400e00de",
       "template": "P03_VEHICLE_DECISION",
-      "strengths": ["vehicle_identity", "host_as_judge", "real_parts_evidence", "decision_first_title"]
+      "strengths": ["vehicle_identity", "host_as_judge", "real_parts_evidence", "decision_first_title"],
+      "source_quality_note": "Repository preview derivative; original authorized source remains the high-resolution reference."
     },
     {
       "id": "case_04_ap9561_mpv",
-      "path": "examples/successful/case_04_ap9561_mpv.jpg",
+      "path": "examples/successful/case_04_ap9561_mpv.webp",
+      "media_type": "image/webp",
+      "role": "successful_case_reference_derivative",
+      "status": "approved",
+      "sha256": "fbb5a18f6b8024e4623a1dbe341625530f852b60001c8674287cb00310a424af",
+      "source_sha256": "f3b19fc916d6fa9eedde44845799a3c80bf94b095f91598094f8e867fed9cc60",
       "template": "P04_PRODUCT_VALUE",
-      "strengths": ["product_vehicle_question", "kit_layout", "detail_evidence_strip", "strong_caliper_color"]
+      "strengths": ["product_vehicle_question", "kit_layout", "detail_evidence_strip", "strong_caliper_color"],
+      "source_quality_note": "Repository preview derivative; original authorized source remains the high-resolution reference."
     }
   ]
 }
