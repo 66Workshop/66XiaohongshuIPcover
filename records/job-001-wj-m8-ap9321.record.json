@@ -11,5 +11,12 @@
     "layout_pass": null,
     "brand_pass": null
   },
-  "notes": "Controlled-production trial record. Populate after generation and human QA."
+  "system_verification": {
+    "repo_v0_1_ready": true,
+    "merged_pr": 1,
+    "merge_commit": "d050e0150c9d4f8db53186d02810ef85a3e6db2c",
+    "main_validation_run": 31692389808,
+    "main_validation_conclusion": "success"
+  },
+  "notes": "First controlled-production trial record. Populate visual QA after candidate generation and human review."
 }
