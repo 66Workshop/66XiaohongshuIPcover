@@ -1,0 +1,32 @@
+{
+  "job_id": "wenjie_m8_ap9321_001",
+  "topic": "问界M8刹车升级",
+  "vehicle": "问界M8",
+  "upgrade_project": "AP Racing CP9321 + 410x36",
+  "main_hook": "原厂34.5米 还要上AP9321？",
+  "secondary_line": "问界M8 | AP9321 | 410x36 | 21寸直上",
+  "person_asset_id": "ip_sit_explain_v1",
+  "layout_template_id": "P04_PRODUCT_VALUE",
+  "font_style_id": "brush_black_red_v1",
+  "vehicle_anchor": "INPUT_REQUIRED_FROM_JOB",
+  "evidence_images": [
+    "INPUT_REAL_CALIPER_OR_WHEEL_IMAGE",
+    "INPUT_REAL_KIT_IMAGE"
+  ],
+  "must_keep": [
+    "face_no_redraw",
+    "vehicle_identity",
+    "real_product_evidence",
+    "black_red_brush_title"
+  ],
+  "must_not": [
+    "fake_face",
+    "fake_vehicle",
+    "fake_caliper_geometry",
+    "wrong_text"
+  ],
+  "output": {
+    "aspect_ratio": "3:4",
+    "candidate_count": 4
+  }
+}
