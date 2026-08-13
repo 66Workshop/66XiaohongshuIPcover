@@ -1,0 +1,38 @@
+{
+  "job_id": "job-001-wj-m8-ap9321",
+  "run_id": "run-001",
+  "run_date": "2026-08-13",
+  "engine": "ChatGPT image generation",
+  "status": "rejected",
+  "selected_output": null,
+  "candidate_count_observed": 1,
+  "qa": {
+    "identity_pass": false,
+    "title_pass": false,
+    "vehicle_pass": false,
+    "evidence_pass": false,
+    "layout_pass": true,
+    "brand_pass": true
+  },
+  "score_30": {
+    "identity": 1,
+    "title": 2,
+    "vehicle": 2,
+    "evidence": 1,
+    "layout": 4,
+    "brand": 4,
+    "total": 14
+  },
+  "p0_failures": [
+    "identity_reference was redrawn instead of pixel-preserved compositing",
+    "vehicle and brake-component evidence were regenerated rather than locked to supplied source images",
+    "unverified braking-distance delta 34.5m -> 28.Xm was invented in the visual",
+    "AP Racing/product typography and component details were not source-faithful"
+  ],
+  "root_cause": "The direct generative path was given too much freedom. It produced a visually coherent poster, but violated the Skill V0.1 evidence-lock and identity-lock requirements.",
+  "decision": "FAIL_P0",
+  "next_action": "Run-002 must use controlled compositing: generate background/layout only, then composite the original approved IP image and original M8/product evidence pixels; typeset title separately; prohibit all inferred performance numbers.",
+  "artifact_sha256_local_derivative": "3bb4b48204d560849a886b98e0d03005a12e88fbc727fd6fe0e27d93c3e8a428",
+  "artifact_storage": "not_committed_to_public_repo; retained in current trial session only",
+  "notes": "This failed run is intentionally recorded. The purpose of V0.1 QA is to reject visually attractive but evidence-unsafe outputs rather than count them as successes."
+}
