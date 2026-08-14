@@ -2,36 +2,24 @@ name: validate-ip-cover-skill
 
 on:
   push:
-    paths:
-      - 'SKILL.md'
-      - 'assets/**'
-      - 'examples/**'
-      - 'jobs/**'
-      - 'records/**'
-      - 'schemas/**'
-      - 'scripts/**'
-      - 'tests/**'
-      - '.github/workflows/validate.yml'
   pull_request:
-    paths:
-      - 'SKILL.md'
-      - 'assets/**'
-      - 'examples/**'
-      - 'jobs/**'
-      - 'records/**'
-      - 'schemas/**'
-      - 'scripts/**'
-      - 'tests/**'
-      - '.github/workflows/validate.yml'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.11'
 
@@ -40,6 +28,9 @@ jobs:
 
       - name: Validate repository assets and structure
         run: python scripts/validate_repo.py
+
+      - name: Validate Creative Content governance
+        run: python scripts/validate_creative_governance.py
 
       - name: Validate all jobs
         shell: bash
@@ -53,4 +44,4 @@ jobs:
         run: |
           while IFS= read -r -d '' file; do
             python -m json.tool "$file" >/dev/null
-          done < <(find assets/manifests schemas jobs records -name '*.json' -print0)
+          done < <(find assets/manifests schemas jobs records governance -name '*.json' -print0)
