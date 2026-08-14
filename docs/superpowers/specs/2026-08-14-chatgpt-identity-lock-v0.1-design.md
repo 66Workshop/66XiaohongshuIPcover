@@ -2,46 +2,47 @@
 
 ## 1. Goal
 
-Build a reusable GitHub-hosted Skill that is optimized for the normal ChatGPT image-creation conversation flow:
+Build a reusable GitHub-hosted Skill for the normal ChatGPT image-creation conversation flow:
 
 1. User uploads a cover title.
 2. User uploads authorized 66Workshop IP/person images, vehicle photos, product/part photos, and font/style reference images.
-3. ChatGPT reads the Skill and assigns a strict role to each asset.
+3. ChatGPT assigns a strict role to each asset.
 4. ChatGPT chooses the safest identity-preservation route before calling image creation/editing.
 5. ChatGPT generates a 3:4 66Workshop cover.
 6. ChatGPT performs identity, vehicle, product, text, and layout QA before calling the result usable.
 
-The success definition is not “looks similar.” It is “the same authorized person remains recognizably the same person, with no invented substitute face, under a repeatable production protocol.”
+Success is not “looks similar.” Success is “the same authorized person remains recognizably the same person, with no invented substitute face, under a repeatable production protocol.”
 
 ## 2. Product boundary
 
 ### FACT
 
 - ChatGPT image creation/editing can use uploaded images as inputs and can edit existing images.
-- The ChatGPT image editor is generative. A selected or protected-looking area is not a cryptographic or pixel-level identity lock.
+- The ChatGPT image editor is generative. A selected or protected-looking area is not a cryptographic or guaranteed pixel-level identity lock.
 - A reasoning model can plan prompts, route inputs, and perform visual QA, but it is not itself a face-identity enforcement engine.
 
 ### Consequence
 
 V0.1 MUST NOT claim that a prompt, negative prompt, or “identity lock” phrase can guarantee identical face pixels when the image model is asked to regenerate the person.
 
-The protocol therefore separates identity preservation into three routes, ordered by reliability.
+The protocol therefore separates identity preservation into three routes, ordered by generation risk.
 
 ## 3. Identity route architecture
 
-### Route A — `PIXEL_LOCK_COMPOSITE` — preferred
+### Route A — `SOURCE_PRESERVE_COMPOSITE` — preferred
 
 Use when the uploaded authorized person asset already has a compatible pose or can be used with only crop/scale/position/light integration.
 
 Rules:
 
-- The face is treated as a protected source asset, not a generative subject.
+- Treat the face/head as the identity anchor to preserve, not a generative style target.
 - Do not ask the image model to redesign facial features, expression, hairstyle, head shape, or skin texture.
-- Prefer using the real person cutout/green-screen source as the person layer while generating/adapting the rest of the cover around it.
+- Prefer using the real person cutout/green-screen source as the main subject while generating/adapting the rest of the cover around it.
 - Pose adaptation is limited to global placement, crop, scale, lean perception, surrounding scene geometry, contact shadow, and light integration.
 - If the desired pose requires reconstructing the face/head, Route A is no longer valid.
+- The name `SOURCE_PRESERVE_COMPOSITE` deliberately avoids implying an unavailable hard pixel lock. Native ChatGPT editing may still regenerate pixels.
 
-This route provides the highest practical identity fidelity.
+This route is expected to provide the highest practical identity fidelity inside the native ChatGPT workflow, but that expectation must be verified by the benchmark.
 
 ### Route B — `SOURCE_EDIT_MINIMAL` — second choice
 
@@ -108,14 +109,15 @@ Do not use “more references is always better.” Too many conflicting face ref
 
 ## 7. Green-screen source protocol
 
-Green-screen person images are preferred production assets because they enable direct placement.
+Green-screen person images are preferred production assets because they reduce the amount of generative reconstruction needed.
 
 Rules:
 
-- Preserve the original face/head pixels whenever possible.
-- Green removal, edge cleanup, spill reduction, crop, scale, contact shadow, and global light/color matching are allowed.
+- Preserve the original face/head identity whenever possible.
+- Green removal intent, edge cleanup, spill reduction, crop, scale, contact shadow, and global light/color matching are allowed.
 - Face retouching, skin smoothing, eye enlargement, jaw reshaping, nose reshaping, mouth replacement, expression synthesis, or age alteration are forbidden.
-- Do not ask the image model to “recreate the same person from the green-screen image.” Use the image as the source subject.
+- Do not ask the image model to “recreate the same person from the green-screen image.” Use the image as the source subject/identity anchor.
+- If exact source pixels must remain unchanged, a non-generative compositor is required; native ChatGPT alone cannot guarantee that property.
 
 ## 8. Vehicle and product evidence lock
 
@@ -194,7 +196,7 @@ A candidate passes identity QA only if all are true:
 
 Scoring:
 
-- `IDENTITY_5`: source face preserved / effectively indistinguishable for intended cover use
+- `IDENTITY_5`: source face highly preserved / effectively indistinguishable for intended cover use
 - `IDENTITY_4`: same person; only minor non-identity rendering difference
 - `IDENTITY_3`: probably same person but noticeable drift — FAIL
 - `IDENTITY_2`: lookalike — FAIL
@@ -235,6 +237,7 @@ V0.1 target:
 ## 14. Non-goals for V0.1
 
 - No claim of mathematical face-embedding verification inside native ChatGPT.
+- No claim of a hard pixel-preservation mask inside native ChatGPT.
 - No invented image-model parameters or reference weights that the ChatGPT UI does not expose.
 - No third-party face-swap service.
 - No training or fine-tuning on the user’s face.
@@ -246,7 +249,7 @@ Only consider after V0.1 benchmark demonstrates the remaining bottleneck:
 
 - optional local/private face-embedding similarity checker for QA
 - private asset store for higher-resolution authorized person sources
-- automatic green-screen cutout/compositing before image generation
+- non-generative green-screen cutout/compositing when exact source-pixel preservation is required
 - pose-library expansion based on observed failure clusters
 - API orchestration if it materially improves repeatability over native ChatGPT
 
