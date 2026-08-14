@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "task_id": "creative-content-profile-v0.1",
+  "repository": "66Workshop/66XiaohongshuIPcover",
+  "task_type": "creative_content_profile_onboarding",
+  "risk_level": "P1",
+  "status": "NEEDS_REVIEW",
+  "required_checks": [
+    "validate",
+    "governance-ci"
+  ],
+  "human_approval_required": true,
+  "evidence": [
+    "core:66Workshop/66-ai-workflow-core@ca393246b5bc05d4896945d5bda8896506d870d1",
+    "profile:creative_content",
+    "ruleset:20834985",
+    "tdd:red:208df77486cca414b16a4255e29b25027f9cc1e4",
+    "tdd:formal-red:6e63aa7d687bdbbd415811b286a576992a7c3fbd",
+    "tdd:green:5428f06a8f4f13087ed2ccd4c8b553631dcb0854",
+    "boundary:HUMAN_IDENTITY_QA_REQUIRED=true",
+    "boundary:PUBLIC_REPO_ORIGINAL_IDENTITY_SOURCE_ALLOWED=false",
+    "boundary:TYPOGRAPHY_BINARY_REDISTRIBUTION_ALLOWED=false",
+    "boundary:THIRD_PARTY_GENERATION_API_ENABLED=false",
+    "boundary:SELF_HOSTED_ENABLED=false"
+  ],
+  "rollback": "Revert the Creative Content profile promotion while leaving the pre-existing Identity-Lock Skill and authorized derivative assets unchanged."
+}
