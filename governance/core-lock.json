@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.1",
+  "core_repository": "66Workshop/66-ai-workflow-core",
+  "pinned_core_ref": "ca393246b5bc05d4896945d5bda8896506d870d1",
+  "profile": "creative_content",
+  "task_contract_version": "0.1",
+  "approval_contract_version": "0.2",
+  "task_fixture_blob": "cecd362a88d4f494e7dc7d33fc2e93e5d05a660c",
+  "approval_fixture_blob": "809b76c1ff59efb6fbee922e28e5d4af5bfd36e5",
+  "self_hosted_enabled": false
+}
