@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "profile": "creative_content",
+  "identity_source_policy": "original_authorized_source_required_for_identity_critical_production",
+  "repo_identity_assets": "derivative_preview_only",
+  "generated_identity_reference_output": "candidate_only",
+  "human_identity_qa_required": true,
+  "vehicle_and_part_evidence_required": true,
+  "typography_binary_redistribution_allowed": false,
+  "third_party_generation_api_enabled": false,
+  "public_repo_original_identity_source_allowed": false,
+  "self_hosted_enabled": false
+}
