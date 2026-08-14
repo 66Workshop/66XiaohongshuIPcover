@@ -1,0 +1,49 @@
+name: Governance CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  governance-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Validate repository assets and structure
+        run: python scripts/validate_repo.py
+
+      - name: Validate Creative Content governance
+        run: python scripts/validate_creative_governance.py
+
+      - name: Validate all jobs
+        shell: bash
+        run: |
+          while IFS= read -r -d '' file; do
+            python scripts/validate_job.py "$file"
+          done < <(find jobs -name '*.json' -print0)
+
+      - name: Validate JSON syntax
+        shell: bash
+        run: |
+          while IFS= read -r -d '' file; do
+            python -m json.tool "$file" >/dev/null
+          done < <(find assets/manifests schemas jobs records governance -name '*.json' -print0)
