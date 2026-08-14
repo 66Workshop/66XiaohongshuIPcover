@@ -44,4 +44,4 @@ jobs:
         run: |
           while IFS= read -r -d '' file; do
             python -m json.tool "$file" >/dev/null
-          done < <(find assets/manifests schemas jobs records governance -name '*.json' -print0)
+          done < <(find assets/manifests schemas jobs records governance tasks -name '*.json' -print0)
