@@ -1,108 +1,244 @@
-# 生产工作流｜小红书 IP 封面 V0.1
+# WORKFLOW — 66Workshop ChatGPT Cover Identity-Lock V0.1
 
-## P0｜输入锁定
+## 1. Objective
 
-每次任务必须先锁 6 件事：
+Run a repeatable ChatGPT-native cover workflow that keeps the authorized person identity stable while preserving real vehicle/product evidence and producing a strong 3:4 cover.
 
-1. 主题
-2. 车型/项目
-3. 主钩子标题
-4. 人物素材 ID
-5. 车型主锚定图
-6. 证据图 1–3 张
+## 2. State machine
 
-没有证据图时，宁可做观点封面，也不要凭空生成假配件。
+### STATE 0 — PREFLIGHT
 
-## P1｜模板选择
+Before image creation:
 
-按内容类型路由：
+1. Read the requested title/topic.
+2. Inspect all uploaded images.
+3. Assign one primary role to each image.
+4. Select `PERSON_IDENTITY_PRIMARY`.
+5. Select up to two `PERSON_IDENTITY_SECONDARY` images only if useful.
+6. Identify vehicle/product evidence images.
+7. Classify pose delta as LOW / MEDIUM / HIGH.
+8. Check whether any P0 evidence is missing.
 
-- 数据/实测 → `P01_DATA_CONFLICT`
-- 修复/拆解/避坑 → `P02_BEFORE_AFTER`
-- 单车型为什么改 → `P03_VEHICLE_DECISION`
-- 产品/方案值不值 → `P04_PRODUCT_VALUE`
+If blocked, do not generate. Ask only for the missing critical asset.
 
-## P2｜标题生成
+### STATE 1 — ROUTE_SELECT
 
-标题先通过人工确认，再进入图像生成。
+Select the safest route that can satisfy the brief:
 
-原则：
-- 一张封面只讲一个冲突
-- 黑字负责事实，红字负责冲突
-- 标题不负责写完整结论
+1. `PIXEL_LOCK_COMPOSITE`
+2. `SOURCE_EDIT_MINIMAL`
+3. `GENERATIVE_IDENTITY_REFERENCE`
 
-## P3｜人物处理
+Never select Route C just because it is more flexible visually.
 
-1. 使用 approved 人物图
-2. 抠绿幕/透明化
-3. 不改脸
-4. 只调光影/色温/接触阴影
+### STATE 2 — COMPOSITION_PLAN
 
-## P4｜证据处理
+Create a short internal composition contract:
 
-- 车型：锁车身结构、灯组、轮毂、姿态
-- 配件：锁颜色、外形、Logo、盘面结构
-- 实测：重量、尺寸、前后对比图必须来自真实证据
+```text
+CANVAS: 3:4
+LAYOUT: P01/P02/P03/P04
+PERSON: left/right/center, target % of frame
+VEHICLE: position + target %
+PRODUCT EVIDENCE: position + size
+TITLE: top/side, 1–2 lines
+SAFE FACE AREA: no text/product overlap
+SAFE VEHICLE AREA: preserve lights/wheels/badges
+```
 
-## P5｜生成候选
+The composition should adapt to the real person source rather than forcing the person to adapt to an arbitrary poster pose.
 
-一次建议 3–4 张：
+### STATE 3 — IMAGE_CREATE_OR_EDIT
 
-- 70% 保守稳定版
-- 20% 强钩子版
-- 10% 实验版
+Use a role-explicit instruction.
 
-不要一次生成 20 张再凭感觉挑，容易把错误规模化。
+Core instruction logic:
 
-## P6｜QA Gate
+- identify the primary identity source by role
+- state that the same authorized person must remain the person in the output
+- state that the face/head is not a style target and must not be reinterpreted
+- state what may change: background, crop, placement, body context, contact shadows, supporting composition
+- state which images are factual vehicle/product evidence
+- state which image is typography style only
+- state the target 3:4 layout
 
-必须逐项检查：
+For Route A:
 
-- 人脸
-- 车型
-- 配件
-- 标题
-- 版式
-- 品牌
+- compose around the real person source
+- preserve head/face identity as-is as much as the tool allows
+- keep pose changes LOW
 
-失败即记录原因。
+For Route B:
 
-## P7｜成功回写
+- edit from the real person source rather than blank-canvas recreation
+- protect head/face identity
+- modify the smallest region necessary for torso/arm/body adaptation
 
-通过的人审版本进入：
+For Route C:
 
-`examples/successful/`
+- one primary identity source, max two secondary identity sources
+- produce a candidate, not an automatic pass
+- avoid dramatic head-angle or expression changes
 
-同时更新 manifest，记录：
+### STATE 4 — QA_GATE
 
-- 主题类型
-- 使用模板
-- 使用人物素材
-- 标题结构
-- 哪些元素被认为成功
-- 哪些元素仍需优化
+Compare the candidate against the source assets.
 
-## P8｜失败回写
+Order:
 
-失败图不必都存原图，但必须记录失败模式：
+1. Identity
+2. Vehicle
+3. Product evidence
+4. Title text
+5. Layout
+6. Brand language
 
-- face_drift
-- car_drift
-- product_hallucination
-- title_error
-- layout_overload
-- weak_hook
-- fake_evidence
+A P0 failure stops acceptance even if the cover is visually strong.
 
-## P9｜20 任务复盘
+### STATE 5 — REPAIR_OR_FALLBACK
 
-每 20 个任务统计：
+Repair the smallest failing region.
 
-- 一次可用率
-- 平均候选数
-- 人脸失败率
-- 车型/配件失败率
-- 标题错字率
-- 平均返工时间
+Rules:
 
-只有数据表明稳定性上升，才升级到 V0.2。
+- wrong text → text-only repair
+- weak background → background-only repair
+- vehicle drift → restore vehicle evidence or reduce unsupported area
+- product drift → restore product evidence or reduce unsupported detail
+- identity drift → do NOT keep locally regenerating the face; reduce pose/reference complexity or fall back to a safer route
+
+Identity fallback sequence:
+
+```text
+C -> B -> A
+B -> A
+A -> choose closer real pose asset
+```
+
+Two identity failures on the same route = mandatory route change or source change.
+
+### STATE 6 — RECORD
+
+Record:
+
+```json
+{
+  "identity_route": "PIXEL_LOCK_COMPOSITE | SOURCE_EDIT_MINIMAL | GENERATIVE_IDENTITY_REFERENCE",
+  "pose_delta": "LOW | MEDIUM | HIGH",
+  "primary_identity_asset": "asset-id-or-upload-index",
+  "secondary_identity_assets": [],
+  "vehicle_evidence": [],
+  "product_evidence": [],
+  "identity_score": 1,
+  "identity_human_pass": false,
+  "vehicle_pass": false,
+  "product_pass": false,
+  "title_pass": false,
+  "layout_pass": false,
+  "rework_count": 0,
+  "failure_reason": ""
+}
+```
+
+## 3. Pose adaptation policy
+
+### LOW
+
+Allowed target changes:
+
+- crop
+- position
+- scale
+- mild torso lean illusion
+- minor hand visibility change
+- background integration
+
+Route A preferred.
+
+### MEDIUM
+
+Allowed only with close source support:
+
+- arm repositioning
+- torso posture change
+- standing/seated adaptation when head angle remains similar
+
+Route B preferred.
+
+### HIGH
+
+Examples:
+
+- frontal to full profile
+- dramatic high/low angle
+- large head rotation
+- dramatic expression synthesis
+- extreme foreshortening
+
+Do not promise identity lock. Prefer another real authorized person source with a closer pose.
+
+## 4. Reference-count policy
+
+More references are not automatically safer.
+
+Default:
+
+- 1 primary person identity image
+- 0–2 secondary identity images
+- 1–3 vehicle/product evidence images relevant to visible details
+- 1 font-style reference
+- 0–1 layout reference
+
+If identity drifts, reduce identity reference count before adding more references.
+
+## 5. Prompt policy
+
+Use positive structural instructions first.
+
+Good:
+
+- “Image 1 is the only primary identity source.”
+- “Keep the same authorized person; preserve facial proportions and identity cues.”
+- “Image 4 is typography style only and must not affect the person.”
+
+Weak as a standalone control:
+
+- “don’t change the face”
+- “negative prompt: no fake face”
+- “100% lock face”
+
+Those phrases may remain as reinforcement, but they are not the control system.
+
+## 6. Repair granularity
+
+Never regenerate the entire cover when the error is local and the person is already correct.
+
+Examples:
+
+- correct person + wrong Chinese character → repair title only
+- correct person + wrong caliper logo → repair/replace product area only
+- correct person + weak shadows → repair environment only
+
+This reduces the chance of destroying a previously successful identity result.
+
+## 7. Existing controlled-production loop retained
+
+The previous repository workflow remains valid and is kept:
+
+- route content to `P01_DATA_CONFLICT`, `P02_BEFORE_AFTER`, `P03_VEHICLE_DECISION`, or `P04_PRODUCT_VALUE`
+- record successful human-approved outputs in `examples/successful/`
+- record failure modes such as `face_drift`, `car_drift`, `product_hallucination`, `title_error`, `layout_overload`, `weak_hook`, and `fake_evidence`
+- review every 20 real jobs using measured failure and rework data
+
+## 8. Output acceptance
+
+A candidate can be marked usable only when:
+
+- identity = `IDENTITY_4` or `IDENTITY_5`
+- human owner approves identity
+- vehicle evidence passes
+- product evidence passes
+- title passes
+- layout is usable at thumbnail size
+
+A visually attractive lookalike is a failed candidate.
