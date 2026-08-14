@@ -1,0 +1,79 @@
+{
+  "contract": "task-contract",
+  "version": "0.1",
+  "cases": [
+    {
+      "id": "task.valid.p1-review",
+      "kind": "task",
+      "expected": "pass",
+      "invariants": ["valid-task", "p1-human-gate"],
+      "input": {
+        "schema_version": "0.1",
+        "task_id": "fixture-p1-review",
+        "repository": "66Workshop/example-repo",
+        "task_type": "fixture",
+        "risk_level": "P1",
+        "status": "NEEDS_REVIEW",
+        "required_checks": ["governance-ci"],
+        "human_approval_required": true,
+        "evidence": ["fixture:evidence/1"],
+        "rollback": "Close the fixture task without merging."
+      }
+    },
+    {
+      "id": "task.invalid.p1-human-approval-false",
+      "kind": "task",
+      "expected": "fail",
+      "invariants": ["p1-human-gate"],
+      "input": {
+        "schema_version": "0.1",
+        "task_id": "fixture-p1-no-human",
+        "repository": "66Workshop/example-repo",
+        "task_type": "fixture",
+        "risk_level": "P1",
+        "status": "NEEDS_REVIEW",
+        "required_checks": ["governance-ci"],
+        "human_approval_required": false,
+        "evidence": ["fixture:evidence/2"],
+        "rollback": "Close the fixture task without merging."
+      }
+    },
+    {
+      "id": "task.invalid.done-without-evidence",
+      "kind": "task",
+      "expected": "fail",
+      "invariants": ["done-requires-evidence"],
+      "input": {
+        "schema_version": "0.1",
+        "task_id": "fixture-done-no-evidence",
+        "repository": "66Workshop/example-repo",
+        "task_type": "fixture",
+        "risk_level": "P2",
+        "status": "DONE",
+        "required_checks": ["governance-ci"],
+        "human_approval_required": false,
+        "evidence": [],
+        "rollback": "Reopen the fixture task."
+      }
+    },
+    {
+      "id": "task.invalid.self-hosted-target",
+      "kind": "task",
+      "expected": "fail",
+      "invariants": ["self-hosted-forbidden"],
+      "input": {
+        "schema_version": "0.1",
+        "task_id": "fixture-self-hosted",
+        "repository": "66Workshop/example-repo",
+        "task_type": "fixture",
+        "risk_level": "P2",
+        "status": "READY",
+        "required_checks": ["governance-ci"],
+        "human_approval_required": false,
+        "evidence": ["fixture:evidence/4"],
+        "rollback": "Use GitHub-hosted execution instead.",
+        "execution_target": "self-hosted"
+      }
+    }
+  ]
+}

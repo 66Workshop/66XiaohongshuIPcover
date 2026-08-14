@@ -1,15 +1,17 @@
-name: validate-ip-cover-skill
+name: Governance CI
 
 on:
-  push:
   pull_request:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  validate:
+  governance-ci:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

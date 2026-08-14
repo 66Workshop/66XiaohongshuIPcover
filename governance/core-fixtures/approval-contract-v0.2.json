@@ -1,0 +1,357 @@
+{
+  "contract": "approval-contract",
+  "version": "0.2",
+  "cases": [
+    {
+      "id": "approval.review.valid-current-head",
+      "kind": "review_set",
+      "expected": "pass",
+      "invariants": ["exact-head-binding"],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_reviewers": ["reviewer-a"],
+        "required_approvals": 1
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approvals": [
+          {
+            "schema_version": "0.2",
+            "task_id": "fixture-approval-v02",
+            "repository": "66Workshop/example-repo",
+            "pull_request": 13,
+            "reviewer": "reviewer-a",
+            "decision": "APPROVED",
+            "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reviewed_at": "2026-08-14T00:00:00Z",
+            "evidence": ["github:pr-review/101"],
+            "source": "github_pull_request_review"
+          }
+        ]
+      }
+    },
+    {
+      "id": "approval.review.invalid-stale-head",
+      "kind": "review_set",
+      "expected": "fail",
+      "invariants": ["exact-head-binding"],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_reviewers": ["reviewer-a"],
+        "required_approvals": 1
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approvals": [
+          {
+            "schema_version": "0.2",
+            "task_id": "fixture-approval-v02",
+            "repository": "66Workshop/example-repo",
+            "pull_request": 13,
+            "reviewer": "reviewer-a",
+            "decision": "APPROVED",
+            "subject_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "reviewed_at": "2026-08-14T00:00:00Z",
+            "evidence": ["github:pr-review/102"],
+            "source": "github_pull_request_review"
+          }
+        ]
+      }
+    },
+    {
+      "id": "approval.review.invalid-later-changes-requested",
+      "kind": "review_set",
+      "expected": "fail",
+      "invariants": ["latest-decisive-review"],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_reviewers": ["reviewer-a"],
+        "required_approvals": 1
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approvals": [
+          {
+            "schema_version": "0.2",
+            "task_id": "fixture-approval-v02",
+            "repository": "66Workshop/example-repo",
+            "pull_request": 13,
+            "reviewer": "reviewer-a",
+            "decision": "APPROVED",
+            "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reviewed_at": "2026-08-14T00:00:00Z",
+            "evidence": ["github:pr-review/103"],
+            "source": "github_pull_request_review"
+          },
+          {
+            "schema_version": "0.2",
+            "task_id": "fixture-approval-v02",
+            "repository": "66Workshop/example-repo",
+            "pull_request": 13,
+            "reviewer": "reviewer-a",
+            "decision": "CHANGES_REQUESTED",
+            "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reviewed_at": "2026-08-14T00:01:00Z",
+            "evidence": ["github:pr-review/104"],
+            "source": "github_pull_request_review"
+          }
+        ]
+      }
+    },
+    {
+      "id": "approval.tag.valid-append-only-attempt",
+      "kind": "signed_tag",
+      "expected": "pass",
+      "invariants": [
+        "github-verified-signed-tag",
+        "protected-signing-key",
+        "protected-signer-email",
+        "append-only-attempt-namespace",
+        "exact-head-binding"
+      ],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_signing_keys": ["SSH:SHA256:fixture-signing-key-001"],
+        "designated_signer_emails": ["approver@example.invalid"]
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approval": {
+          "schema_version": "0.2",
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo",
+          "pull_request": 13,
+          "decision": "APPROVED",
+          "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "reviewed_at": "2026-08-14T00:02:00Z",
+          "evidence": [
+            "github:git-tag/cccccccccccccccccccccccccccccccccccccccc",
+            "github:tag/approval/fixture-approval-v02/pr-13/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/attempt-20260814T000200Z"
+          ],
+          "source": "github_verified_signed_tag",
+          "tag_name": "approval/fixture-approval-v02/pr-13/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/attempt-20260814T000200Z",
+          "tag_object_sha": "cccccccccccccccccccccccccccccccccccccccc",
+          "tagger_email": "approver@example.invalid",
+          "signing_key_fingerprint": "SSH:SHA256:fixture-signing-key-001",
+          "fingerprint_source": "cryptographic_verifier",
+          "github_verification": {
+            "verified": true,
+            "reason": "valid",
+            "verified_at": "2026-08-14T00:02:01Z"
+          }
+        }
+      }
+    },
+    {
+      "id": "approval.tag.valid-canonical-first-attempt",
+      "kind": "signed_tag",
+      "expected": "pass",
+      "invariants": ["append-only-attempt-namespace"],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_signing_keys": ["SSH:SHA256:fixture-signing-key-001"],
+        "designated_signer_emails": ["approver@example.invalid"]
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approval": {
+          "schema_version": "0.2",
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo",
+          "pull_request": 13,
+          "decision": "APPROVED",
+          "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "reviewed_at": "2026-08-14T00:03:00Z",
+          "evidence": ["github:git-tag/dddddddddddddddddddddddddddddddddddddddd"],
+          "source": "github_verified_signed_tag",
+          "tag_name": "approval/fixture-approval-v02/pr-13/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "tag_object_sha": "dddddddddddddddddddddddddddddddddddddddd",
+          "tagger_email": "approver@example.invalid",
+          "signing_key_fingerprint": "SSH:SHA256:fixture-signing-key-001",
+          "fingerprint_source": "cryptographic_verifier",
+          "github_verification": {
+            "verified": true,
+            "reason": "valid",
+            "verified_at": "2026-08-14T00:03:01Z"
+          }
+        }
+      }
+    },
+    {
+      "id": "approval.tag.invalid-wrong-email",
+      "kind": "signed_tag",
+      "expected": "fail",
+      "invariants": ["protected-signer-email"],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_signing_keys": ["SSH:SHA256:fixture-signing-key-001"],
+        "designated_signer_emails": ["approver@example.invalid"]
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approval": {
+          "schema_version": "0.2",
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo",
+          "pull_request": 13,
+          "decision": "APPROVED",
+          "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "reviewed_at": "2026-08-14T00:04:00Z",
+          "evidence": ["github:git-tag/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"],
+          "source": "github_verified_signed_tag",
+          "tag_name": "approval/fixture-approval-v02/pr-13/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/attempt-20260814T000400Z",
+          "tag_object_sha": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "tagger_email": "wrong@example.invalid",
+          "signing_key_fingerprint": "SSH:SHA256:fixture-signing-key-001",
+          "fingerprint_source": "cryptographic_verifier",
+          "github_verification": {
+            "verified": true,
+            "reason": "valid",
+            "verified_at": "2026-08-14T00:04:01Z"
+          }
+        }
+      }
+    },
+    {
+      "id": "approval.tag.invalid-wrong-key",
+      "kind": "signed_tag",
+      "expected": "fail",
+      "invariants": ["protected-signing-key"],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_signing_keys": ["SSH:SHA256:fixture-signing-key-001"],
+        "designated_signer_emails": ["approver@example.invalid"]
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approval": {
+          "schema_version": "0.2",
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo",
+          "pull_request": 13,
+          "decision": "APPROVED",
+          "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "reviewed_at": "2026-08-14T00:05:00Z",
+          "evidence": ["github:git-tag/ffffffffffffffffffffffffffffffffffffffff"],
+          "source": "github_verified_signed_tag",
+          "tag_name": "approval/fixture-approval-v02/pr-13/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/attempt-20260814T000500Z",
+          "tag_object_sha": "ffffffffffffffffffffffffffffffffffffffff",
+          "tagger_email": "approver@example.invalid",
+          "signing_key_fingerprint": "SSH:SHA256:fixture-signing-key-999",
+          "fingerprint_source": "cryptographic_verifier",
+          "github_verification": {
+            "verified": true,
+            "reason": "valid",
+            "verified_at": "2026-08-14T00:05:01Z"
+          }
+        }
+      }
+    },
+    {
+      "id": "approval.tag.invalid-github-unverified",
+      "kind": "signed_tag",
+      "expected": "fail",
+      "invariants": ["github-verified-signed-tag"],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_signing_keys": ["SSH:SHA256:fixture-signing-key-001"],
+        "designated_signer_emails": ["approver@example.invalid"]
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approval": {
+          "schema_version": "0.2",
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo",
+          "pull_request": 13,
+          "decision": "APPROVED",
+          "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "reviewed_at": "2026-08-14T00:06:00Z",
+          "evidence": ["github:git-tag/1111111111111111111111111111111111111111"],
+          "source": "github_verified_signed_tag",
+          "tag_name": "approval/fixture-approval-v02/pr-13/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/attempt-20260814T000600Z",
+          "tag_object_sha": "1111111111111111111111111111111111111111",
+          "tagger_email": "approver@example.invalid",
+          "signing_key_fingerprint": "SSH:SHA256:fixture-signing-key-001",
+          "fingerprint_source": "cryptographic_verifier",
+          "github_verification": {
+            "verified": false,
+            "reason": "unknown_key",
+            "verified_at": null
+          }
+        }
+      }
+    },
+    {
+      "id": "approval.tag.invalid-arbitrary-retry-suffix",
+      "kind": "signed_tag",
+      "expected": "fail",
+      "invariants": ["append-only-attempt-namespace"],
+      "context": {
+        "current_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "current_pull_request": 13,
+        "designated_signing_keys": ["SSH:SHA256:fixture-signing-key-001"],
+        "designated_signer_emails": ["approver@example.invalid"]
+      },
+      "input": {
+        "task": {
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo"
+        },
+        "approval": {
+          "schema_version": "0.2",
+          "task_id": "fixture-approval-v02",
+          "repository": "66Workshop/example-repo",
+          "pull_request": 13,
+          "decision": "APPROVED",
+          "subject_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "reviewed_at": "2026-08-14T00:07:00Z",
+          "evidence": ["github:git-tag/2222222222222222222222222222222222222222"],
+          "source": "github_verified_signed_tag",
+          "tag_name": "approval/fixture-approval-v02/pr-13/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/retry-latest",
+          "tag_object_sha": "2222222222222222222222222222222222222222",
+          "tagger_email": "approver@example.invalid",
+          "signing_key_fingerprint": "SSH:SHA256:fixture-signing-key-001",
+          "fingerprint_source": "cryptographic_verifier",
+          "github_verification": {
+            "verified": true,
+            "reason": "valid",
+            "verified_at": "2026-08-14T00:07:01Z"
+          }
+        }
+      }
+    }
+  ]
+}
