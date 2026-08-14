@@ -6,19 +6,17 @@
 
 目标：先保证本人身份与真实证据，再做姿态、构图、光影和标题设计。
 
+> Route A `SOURCE_PRESERVE_COMPOSITE` 表示“最大化沿用真人源”，不是原生 ChatGPT 的硬像素锁功能。
+
 ---
 
 ## 2. 用户最短调用语句
-
-用户可以直接说：
 
 > 按 `66Workshop ChatGPT Cover Identity-Lock Skill V0.1` 执行。标题：`<填标题>`。用我上传的 IP 图锁定本人身份，车型图和配件图作为真实证据，字体图只作为字体视觉风格参考。做 3:4 66Workshop 封面。先自动做素材角色绑定和姿态风险判断，选择最安全的 A/B/C 身份路线，再创建图片；出图后必须做人脸、车型、配件和文字 QA。不是本人就直接判失败，不接受相似脸，按回退规则重做。
 
 ---
 
-## 3. ChatGPT 执行前内部协议
-
-在调用图像工具前必须先完成：
+## 3. ChatGPT 调图前内部协议
 
 ```text
 TITLE = ...
@@ -38,9 +36,9 @@ LAYOUT = P01 | P02 | P03 | P04
 
 ---
 
-## 4. Route A — PIXEL_LOCK_COMPOSITE 指令骨架
+## 4. Route A — SOURCE_PRESERVE_COMPOSITE
 
-优先使用。适用于真人姿态基本可用。
+首选。适用于真人姿态基本可用。
 
 ```text
 Create a 3:4 66Workshop automotive social-media cover.
@@ -48,10 +46,11 @@ Create a 3:4 66Workshop automotive social-media cover.
 IDENTITY:
 Image <X> is PERSON_IDENTITY_PRIMARY and is the only primary identity source.
 Use the same authorized real person as the foreground IP subject.
-Preserve the real person's face/head identity and facial proportions.
-Treat the person source as a real visual asset to integrate into the composition, not as a style reference for recreating a similar person.
+Preserve the real person's face/head identity and facial proportions as much as the native editing workflow allows.
+Treat the person source as the identity anchor to preserve, not as a style reference for recreating a similar person.
 Do not reinterpret, beautify, redesign, or substitute the face.
 Keep pose changes LOW. Prefer crop, scale, placement, scene integration, contact shadow, rim light and global color/light matching instead of rebuilding the face/head.
+Do not claim exact pixel preservation: native ChatGPT image editing is generative.
 
 VEHICLE EVIDENCE:
 Image <Y> is the real vehicle evidence. Preserve model-defining body lines, lights, wheels, stance and badges visible in the source.
@@ -70,7 +69,7 @@ Use 66Workshop visual language: black/white/red with restrained yellow emphasis,
 
 ---
 
-## 5. Route B — SOURCE_EDIT_MINIMAL 指令骨架
+## 5. Route B — SOURCE_EDIT_MINIMAL
 
 用于中等姿态调整。
 
@@ -89,7 +88,7 @@ If the edit requires reconstructing the head/face to satisfy the pose, stop and 
 
 ---
 
-## 6. Route C — GENERATIVE_IDENTITY_REFERENCE 指令骨架
+## 6. Route C — GENERATIVE_IDENTITY_REFERENCE
 
 最后手段，只生成候选。
 
@@ -103,7 +102,7 @@ Avoid large head-angle changes and dramatic expression changes.
 This result is a candidate only and must pass IDENTITY_4/5 QA plus human approval before acceptance.
 ```
 
-如果同一路线连续两次低于 `IDENTITY_4`，停止 C，回退 B/A。
+同一路线连续两次低于 `IDENTITY_4`，停止 C，回退 B/A。
 
 ---
 
@@ -120,19 +119,11 @@ No anime/3D/cartoon reinterpretation of the person.
 No invented vehicle/product logo or model number.
 ```
 
-但这些只是强化约束，不能代替：
-
-- 角色绑定
-- 主身份锚点选择
-- A/B/C 路由
-- 姿态降级
-- 出图后 QA
+但这些只是强化约束，不能代替：角色绑定、主身份锚点、A/B/C 路由、姿态降级、出图 QA。
 
 ---
 
-## 8. 出图后 ChatGPT 必须执行的 QA 指令
-
-不要直接说“做好了”。先做：
+## 8. 出图后必须 QA
 
 ```text
 Compare the generated person against PERSON_IDENTITY_PRIMARY.
@@ -161,11 +152,11 @@ VERDICT: ACCEPT/REPAIR/FALLBACK/STOP
 
 ---
 
-## 9. 本人已经正确时的局部修复语句
+## 9. 本人已正确时的局部修复
 
 ### 只修标题
 
-> 保持人物、脸、车型、配件和整体构图完全不动，只修标题区域。精确文字为：`<标题>`。修完后重新逐字检查，不重新生成已通过的人脸。
+> 保持人物、脸、车型、配件和整体构图不动，只修标题区域。精确文字为：`<标题>`。修完后逐字检查，不重新生成已通过的人脸。
 
 ### 只修车型/配件
 
@@ -177,7 +168,7 @@ VERDICT: ACCEPT/REPAIR/FALLBACK/STOP
 
 ---
 
-## 10. 强制停止语句
+## 10. 强制停止
 
 如果多次生成后仍不是本人：
 
@@ -185,9 +176,7 @@ VERDICT: ACCEPT/REPAIR/FALLBACK/STOP
 
 ---
 
-## 11. 推荐生产习惯
-
-每次正式封面尽量只给图像模型：
+## 11. 推荐单次素材量
 
 - 1 张主身份图
 - 0–2 张身份补充图
@@ -195,4 +184,4 @@ VERDICT: ACCEPT/REPAIR/FALLBACK/STOP
 - 1 张字体风格参考
 - 0–1 张版式参考
 
-素材库可以很多；单次任务引用必须克制。
+素材库可以很多；单次任务引用要克制。
